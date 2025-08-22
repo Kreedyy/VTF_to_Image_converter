@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36327.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VTF to Image converter", "VTF to Image converter\VTF to Image converter.csproj", "{FDA663B7-1F1E-462C-B5C7-B93FC9A52BDE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FDA663B7-1F1E-462C-B5C7-B93FC9A52BDE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDA663B7-1F1E-462C-B5C7-B93FC9A52BDE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDA663B7-1F1E-462C-B5C7-B93FC9A52BDE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDA663B7-1F1E-462C-B5C7-B93FC9A52BDE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D0B815B9-3F93-41F5-A17C-F9347C05B0A7}
+	EndGlobalSection
+EndGlobal
