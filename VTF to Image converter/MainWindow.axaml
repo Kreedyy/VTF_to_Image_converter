@@ -4,7 +4,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="VTF_to_Image_converter.MainWindow"
-        Title="VTF_to_Image_converter">
+        Title="VTF to Image converter">
 	<Grid Background="Black" Height="50">
 		<Button Click="OpenFile" Content="Upload images" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 	</Grid>
