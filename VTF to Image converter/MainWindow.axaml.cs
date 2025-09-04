@@ -185,7 +185,7 @@ namespace VTF_to_Image_converter
 
         public static class FilePickerFileTypes
         {
-            public static FilePickerFileType VTFAndImages { get; } = new("VTF")
+            public static FilePickerFileType VTFAndImages { get; } = new("VTF and Images")
             {
                 Patterns = new[] { "*.vtf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp" }
             };
