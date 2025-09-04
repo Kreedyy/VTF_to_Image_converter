@@ -34,6 +34,7 @@ namespace VTF_to_Image_converter
                 AllowMultiple = true,
                 FileTypeFilter = [FilePickerFileTypes.VTFAndImages]
             });
+
         }
         private async void ConvertFiles(object sender, RoutedEventArgs e)
         {
@@ -174,6 +175,10 @@ namespace VTF_to_Image_converter
 
         private async Task<string[]> GetSelectedFilePathsAsync()
         {
+            if (files == null)
+            {
+                return Array.Empty<string>();
+            }
             var selectedFiles = await files;
             return selectedFiles.Select(f => f.Path.LocalPath).ToArray();
         }
