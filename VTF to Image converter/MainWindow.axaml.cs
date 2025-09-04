@@ -27,7 +27,7 @@ namespace VTF_to_Image_converter
             {
                 Title = "Select Image",
                 AllowMultiple = true,
-                FileTypeFilter = [FilePickerFileTypes.VTF]
+                FileTypeFilter = [FilePickerFileTypes.VTFAndImages]
             });
             var filePaths = await GetSelectedFilePathsAsync();
             foreach (var filePath in filePaths)
@@ -51,9 +51,9 @@ namespace VTF_to_Image_converter
 
         public static class FilePickerFileTypes
         {
-            public static FilePickerFileType VTF { get; } = new("VTF")
+            public static FilePickerFileType VTFAndImages { get; } = new("VTF")
             {
-                Patterns = new[] { "*.vtf" }
+                Patterns = new[] { "*.vtf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp" }
             };
         }
     }
