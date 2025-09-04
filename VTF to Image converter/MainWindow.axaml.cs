@@ -1,16 +1,19 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform.Storage;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using Sledge.Formats.Texture.Vtf;
+using SixLabors.ImageSharp.Processing;
 using Sledge.Formats.Texture.ImageSharp;
+using Sledge.Formats.Texture.Vtf;
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using ImageSixLabor = SixLabors.ImageSharp.Image;
-using System.Diagnostics;
-using Avalonia;
+using Point = SixLabors.ImageSharp.Point;
 
 namespace VTF_to_Image_converter
 {
@@ -87,8 +90,8 @@ namespace VTF_to_Image_converter
         }
         private bool MaintainAspectRatioForVTF() //Read if checkbox is checked, resize to power of 2
         {
-            bool a = false;
-            return a;
+            CheckBox aspectRatioCheckbox = this.FindControl<CheckBox>("AspectRatioCheckbox");
+            return aspectRatioCheckbox.IsChecked ?? false;
         }
         private void VTFtoPNG(FileStream stream, string filePath)
         {
@@ -101,6 +104,12 @@ namespace VTF_to_Image_converter
             string[] imageFilePath = filePath.Split(".");
             image.SaveAsPng(imageFilePath[0] + ".png");
         }
+        private int RoundUpToPowerOfTwo(int value)
+        {
+            var po2 = 1;
+            while (po2 < value) po2 *= 2;
+            return po2;
+        }
         private void ImageToVTF(FileStream stream, string filePath)
         {
             VtfFile vtfFile = new VtfFile();
@@ -110,6 +119,27 @@ namespace VTF_to_Image_converter
             if (MaintainAspectRatioForVTF()) //If false, AutoResizeToPowerOfTwo will handle it.
             {
                 //Resize to nearest po2 while maintaining aspect ratio, fill in missing pixels as transparent
+                var newWidth = RoundUpToPowerOfTwo(image.Width);
+                var newHeight = RoundUpToPowerOfTwo(image.Height);
+
+                // Calculate scale to fit image inside new dimensions
+                float scale = Math.Min((float)newWidth / image.Width, (float)newHeight / image.Height);
+                int scaledWidth = (int)(image.Width * scale);
+                int scaledHeight = (int)(image.Height * scale);
+
+                // Create a new transparent image with power-of-two dimensions
+                var canvas = new Image<Rgba32>(newWidth, newHeight, new Rgba32(0, 0, 0, 0));
+
+                // Center the scaled image
+                int offsetX = (newWidth - scaledWidth) / 2;
+                int offsetY = (newHeight - scaledHeight) / 2;
+
+                // Resize and draw the image onto the canvas
+                image.Mutate(x => x.Resize(scaledWidth, scaledHeight));
+                canvas.Mutate(x => x.DrawImage(image, new Point(offsetX, offsetY), 1f));
+
+                image = canvas;
+
             }
 
             VtfImageBuilderOptions options = new VtfImageBuilderOptions
@@ -117,6 +147,7 @@ namespace VTF_to_Image_converter
                 ImageFormat = GetSelectedImageFormatForVTF(),
                 AutoResizeToPowerOfTwo = true //Needs to be po2 to work
             };
+
             vtfFile.AddImage(image.ToVtfImage(options));
 
             
