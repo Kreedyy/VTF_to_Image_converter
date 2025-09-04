@@ -51,10 +51,6 @@ namespace VTF_to_Image_converter
                     case string s when s.EndsWith(".vtf"):
                         VTFtoPNG(stream, filePath);
                         break;
-
-                    default:
-                        Debug.WriteLine("File is not image");
-                        break;
                 }
             }
         }
@@ -113,29 +109,23 @@ namespace VTF_to_Image_converter
         }
         private void ImageToVTF(FileStream stream, string filePath)
         {
-            VtfFile vtfFile = new VtfFile();
-
             ImageSixLabor image = ImageSixLabor.Load(stream);
             stream.Close();
-            if (MaintainAspectRatioForVTF()) //If false, AutoResizeToPowerOfTwo will handle it.
+
+            if (MaintainAspectRatioForVTF()) //If false, BuilderOptions will handle it.
             {
-                //Resize to nearest po2 while maintaining aspect ratio, fill in missing pixels as transparent
                 var newWidth = RoundUpToPowerOfTwo(image.Width);
                 var newHeight = RoundUpToPowerOfTwo(image.Height);
 
-                // Calculate scale to fit image inside new dimensions
                 float scale = Math.Min((float)newWidth / image.Width, (float)newHeight / image.Height);
                 int scaledWidth = (int)(image.Width * scale);
                 int scaledHeight = (int)(image.Height * scale);
 
-                // Create a new transparent image with power-of-two dimensions
                 var canvas = new Image<Rgba32>(newWidth, newHeight, new Rgba32(0, 0, 0, 0));
 
-                // Center the scaled image
                 int offsetX = (newWidth - scaledWidth) / 2;
                 int offsetY = (newHeight - scaledHeight) / 2;
 
-                // Resize and draw the image onto the canvas
                 image.Mutate(x => x.Resize(scaledWidth, scaledHeight));
                 canvas.Mutate(x => x.DrawImage(image, new Point(offsetX, offsetY), 1f));
 
@@ -149,6 +139,7 @@ namespace VTF_to_Image_converter
                 AutoResizeToPowerOfTwo = true //Needs to be po2 to work
             };
 
+            VtfFile vtfFile = new VtfFile();
             vtfFile.AddImage(image.ToVtfImage(options));
 
             
@@ -187,7 +178,7 @@ namespace VTF_to_Image_converter
         {
             public static FilePickerFileType VTFAndImages { get; } = new("VTF and Images")
             {
-                Patterns = new[] { "*.vtf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp" }
+                Patterns = [ "*.vtf", "*.png", "*.jpg", "*.jpeg", "*.gif", "*.bmp", "*.webp" ]
             };
         }
     }
