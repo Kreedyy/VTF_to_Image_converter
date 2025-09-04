@@ -18,7 +18,8 @@ namespace VTF_to_Image_converter
                 desktop.MainWindow = new MainWindow()
                 {
                     Width = 300,
-                    Height = 200
+                    Height = 200,
+                    CanResize = false,
                 };
             }
 
