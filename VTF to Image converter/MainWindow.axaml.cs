@@ -60,7 +60,6 @@ namespace VTF_to_Image_converter
             var selectedItem = formatDropdown.SelectedItem as ComboBoxItem;
 
             var selectedText = selectedItem.Content.ToString();
-            Debug.WriteLine(selectedText);
             switch (selectedText)
             {
                 case "RGBA8888":
