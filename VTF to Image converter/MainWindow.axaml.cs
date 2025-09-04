@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ImageSixLabor = SixLabors.ImageSharp.Image;
 using System.Diagnostics;
+using Avalonia;
 
 namespace VTF_to_Image_converter
 {
@@ -30,6 +31,9 @@ namespace VTF_to_Image_converter
                 AllowMultiple = true,
                 FileTypeFilter = [FilePickerFileTypes.VTFAndImages]
             });
+        }
+        private async void ConvertFiles(object sender, RoutedEventArgs e)
+        {
             var filePaths = await GetSelectedFilePathsAsync();
             foreach (var filePath in filePaths)
             {
@@ -52,18 +56,47 @@ namespace VTF_to_Image_converter
         }
         private VtfImageFormat GetSelectedImageFormatForVTF() //Read what is selected from a dropdown menu, default is RGBA8888
         {
-            var format = VtfImageFormat.Dxt5;
-            return format;
+            ComboBox formatDropdown = this.FindControl<ComboBox>("FormatDropdown");
+            var selectedItem = formatDropdown.SelectedItem as ComboBoxItem;
+            // Get the text/content of the selected item
+            var selectedText = selectedItem?.Content?.ToString();
+            Debug.WriteLine(selectedText);
+            switch (selectedText)
+            {
+                case "RGBA8888":
+                    return VtfImageFormat.Rgba8888;
+                case "ABGR8888":
+                    return VtfImageFormat.Abgr8888;
+                case "ARGB8888":
+                    return VtfImageFormat.Argb8888;
+                case "BGRA8888":
+                    return VtfImageFormat.Bgra8888;
+                case "DXT1":
+                    return VtfImageFormat.Dxt1;
+                case "DXT3":
+                    return VtfImageFormat.Dxt3;
+                case "DXT5":
+                    return VtfImageFormat.Dxt5;
+                case "RGBA16161616F":
+                    return VtfImageFormat.Rgba16161616F;
+                case "RGBA16161616":
+                    return VtfImageFormat.Rgba16161616;
+                default:
+                    return VtfImageFormat.Rgba8888;
+            }
         }
-        private bool GetAutoResizeForVTF() //Read if checkbox is checked, resize to power of 2
+        private bool MaintainAspectRatioForVTF() //Read if checkbox is checked, resize to power of 2
         {
-            return false;
+            bool a = false;
+            return a;
         }
         private void VTFtoPNG(FileStream stream, string filePath)
         {
             VtfFile vtfFile = new VtfFile(stream);
-            ImageSixLabor image = vtfFile.ToImage<Rgba32>();
             stream.Close();
+
+            ImageSixLabor image = vtfFile.ToImage<Rgba32>();
+
             int length = filePath.Length;
             string[] imageFilePath = filePath.Split(".");
             image.SaveAsPng(imageFilePath[0] + ".png");
@@ -71,11 +104,22 @@ namespace VTF_to_Image_converter
         private void ImageToVTF(FileStream stream, string filePath)
         {
             VtfFile vtfFile = new VtfFile();
+
             ImageSixLabor image = ImageSixLabor.Load(stream);
-            image.ToVtfFile();
-
-
             stream.Close();
+            if (MaintainAspectRatioForVTF()) //If false, AutoResizeToPowerOfTwo will handle it.
+            {
+                //Resize to nearest po2 while maintaining aspect ratio, fill in missing pixels as transparent
+            }
+
+            VtfImageBuilderOptions options = new VtfImageBuilderOptions
+            {
+                ImageFormat = GetSelectedImageFormatForVTF(),
+                AutoResizeToPowerOfTwo = true //Needs to be po2 to work
+            };
+            vtfFile.AddImage(image.ToVtfImage(options));
+
+            
             int length = filePath.Length;
             string[] imageFilePath = filePath.Split(".");
             using (var output = File.Create(imageFilePath[0] + ".vtf"))

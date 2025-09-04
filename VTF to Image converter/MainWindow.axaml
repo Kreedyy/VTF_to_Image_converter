@@ -11,7 +11,7 @@
 	</Grid>
 	<Grid Background="Red" Height="50" ColumnDefinitions="*,*"> <!--https://developer.valvesoftware.com/wiki/VTF_(Valve_Texture_Format)-->
 		<StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-			<ComboBox SelectedIndex="0">
+			<ComboBox Name="FormatDropdown" SelectedIndex="0">
 				<ComboBoxItem>RGBA8888</ComboBoxItem>
 				<ComboBoxItem>ABGR8888</ComboBoxItem>
 				<ComboBoxItem>ARGB8888</ComboBoxItem>
@@ -24,6 +24,9 @@
 			</ComboBox>
 		</StackPanel>
 		<CheckBox VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Column="1">Resize to nearest power of 2</CheckBox>
+	</Grid>
+	<Grid Background="Gray" Height="100">
+		<Button Click="ConvertFiles" Content="Convert" Margin="0,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 	</Grid>
 	</StackPanel>
 </Window>
